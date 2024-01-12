@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+    --body-background: #FAFAFA;
+    --bs-body-font-family: 'Comic Sans', sans-serif !important;
+    --notif-width: 200px;
+}
+
+body {
+    background-color: var(--body-background);
+}
+
+#navigation-menu > a:not(:first-child) {
+    min-width: 120px;
+}
+
+.vw-75 {
+    width: 75vw;
+}
+
+a.btn:not(:last-child) {
+    margin-right: 5px;
+}
+
+.dim-layer {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-image: radial-gradient(rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.5));
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+    z-index: 1
+}
+
+.notif {
+    position: fixed;
+    background: var(--body-background);
+    z-index: 3;
+    top: -500px;
+    left: calc(50vw - (var(--notif-width) / 2));
+    margin: auto;
+    width: var(--notif-width);
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.notif.move-down {
+    top: 2em;
+    animation-name: movedown;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;
+}
+
+.notif.move-up {
+    animation-name: moveup;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;
+    top: -100px;
+}
+
+@keyframes movedown {
+    from {top: -100px}
+    to {top: 2em}
+}
+
+@keyframes moveup {
+    from {top: 2em}
+    to {top: -100px}
+}

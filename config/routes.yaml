@@ -1,0 +1,3 @@
+App\Controller\API\TransactionController:
+    type: annotation
+    resource: App\Controller\API\TransactionController

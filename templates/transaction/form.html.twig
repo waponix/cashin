@@ -1,0 +1,79 @@
+<section v-if="isFormVisible" id="form" class="p-5">
+    <div id="toolbox" class="float-start text-center">
+        <a @click="toggleForm(false); undoFocusRecord()" class="btn btn-outline-dark rounded-5 m-0 mb-1"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-trigger="hover"
+            data-bs-content="Close"
+        ><i class="fa fa-arrow-left"></i></a><br>
+        <a @click="saveRecord" class="btn btn-outline-dark rounded-5 m-0 mb-1"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-trigger="hover"
+            data-bs-content="Save"
+        ><i class="fa fa-save"></i></a><br>
+        <a class="btn btn-outline-dark rounded-5 m-0"
+            data-bs-toggle="popover"
+            data-bs-placement="right"
+            data-bs-trigger="hover"
+            data-bs-content="Delete"
+            disabled
+        ><i class="fa fa-trash"></i></a>
+    </div>
+    <div class="vw-75 m-auto clearfix">
+        {{ form_start(form, {attr: {id: 'transaction'}}) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col">
+                <div>
+                    {{ form_label(form.type, null, {label_attr: { class: 'text-muted' }}) }}
+                    <span v-if="showFailure('type')" class="ms-1 text-danger text-end fst-italic">
+                        {$ showFailure('type') $}<i class="ps-1 fa fa-close"></i>
+                    </span>
+                </div>
+                {{ form_widget(form.type, {attr: {'v-model' : 'focusedRecord.type'}}) }}
+            </div>
+            <div class="col">
+                <div>
+                    {{ form_label(form.referenceId, null, {label_attr: { class: 'text-muted' }}) }}
+                    <span v-if="showFailure('referenceId')" class="ms-1 text-danger text-end fst-italic">
+                        {$ showFailure('referenceId') $}<i class="ps-1 fa fa-close"></i>
+                    </span>
+                </div>
+                {{ form_widget(form.referenceId, {attr: {'v-model' : 'focusedRecord.referenceId'}}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div>
+                    {{ form_label(form.mobile, null, {label_attr: { class: 'text-muted' }}) }}
+                    <span v-if="showFailure('mobile')" class="ms-1 text-danger text-end fst-italic">
+                        {$ showFailure('mobile') $}<i class="ps-1 fa fa-close"></i>
+                    </span>
+                </div>
+                {{ form_widget(form.mobile, {attr: {'v-model' : 'focusedRecord.mobile'}}) }}
+            </div>
+            <div class="col">
+                <div>
+                    {{ form_label(form.amount, null, {label_attr: { class: 'text-muted' }}) }}
+                    <span v-if="showFailure('amount')" class="ms-1 text-danger text-end fst-italic">
+                        {$ showFailure('amount') $}<i class="ps-1 fa fa-close"></i>
+                    </span>
+                </div>
+                {{ form_widget(form.amount, {attr: {'v-model' : 'focusedRecord.amount'}}) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div>
+                    {{ form_label(form.transactionedAt, null, {label_attr: { class: 'text-muted' }}) }}
+                    <span v-if="showFailure('transactionedAt')" class="ms-1 text-danger text-end fst-italic">
+                        {$ showFailure('transactionedAt') $}<i class="ps-1 fa fa-close"></i>
+                    </span>
+                </div>
+                {{ form_widget(form.transactionedAt, {attr: {'v-model' : 'focusedRecord.transactionedAt'}}) }}
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</section>

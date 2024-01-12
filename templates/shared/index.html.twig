@@ -1,0 +1,27 @@
+{% extends 'shared/base-layout.html.twig' %}
+
+{% set documentTitle = 'Cashin | Dashboard' %}
+{% set pageTitle = 'Dashboard' %}
+{% set active = 'dashboard' %}
+
+
+{% block body %}
+    ${ message }$
+{% endblock %}
+
+
+{% block scripts %}
+    {{ parent() }}
+
+    <script>
+        Vue.createApp({
+            setup() {
+                const message = 'Hello wrold'
+                return {
+                    message
+                }
+            },
+            delimiters: ['${', '}$'],
+        }).mount('#app')
+    </script>
+{% endblock %}

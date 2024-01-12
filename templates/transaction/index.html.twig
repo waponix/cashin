@@ -1,0 +1,201 @@
+{% extends 'shared/base-layout.html.twig' %}
+
+{% set documentTitle = 'Cashin | Transactions' %}
+{% set pageTitle = 'Transactions' %}
+{% set active = 'transaction' %}
+
+{% block pageOptions %}
+    {% include 'transaction/options.html.twig' %}
+{% endblock %}
+{% block body %}
+    <div id="content" class="vw-75 m-auto">
+        {% include 'transaction/list.html.twig' %}
+    </div>
+    {% include 'transaction/form.html.twig' %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/shared/form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/transaction/transaction-list.css') }}">
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        const initialRecord = {
+                    type: 'cash in'
+                }
+
+        Vue.createApp({
+            data() {
+                return {
+                    data: [],
+                    isDimmed: false,
+                    isFormVisible: false,
+                    metas: {
+                        types: {}
+                    },
+                    focusedRecord: {...initialRecord},
+                    previousRecordState: {...initialRecord},
+                    failures: {},
+                    notif: {
+                        status: null,
+                        class: ''
+                    },
+                }
+            },
+            mounted () {
+                axios
+                    .get('/api/transactions')
+                    .then(response => {
+                        this.data = response.data.data
+                        this.metas.types = response.data.metas.types
+                    })
+
+                this.init() 
+            },
+            computed: {
+                list() {
+                    let list = {}
+                    let group = previousDate = '-'
+
+                    list[group] = []
+
+                    this.data.forEach((record, key) => {
+                        if (previousDate !== this.formatDate(record.transactionedAt, 'yyyy, MMM')) group = previousDate
+                        if (!list[group]) list[group] = []
+
+                        list[group].push({
+                            showDivider: previousDate !== this.formatDate(record.transactionedAt, 'yyyy, MMM'),
+                            record,
+                        })
+
+                        previousDate = this.formatDate(record.transactionedAt, 'yyyy, MMM')
+                    })
+
+                    return list
+                } 
+            },
+            methods: {
+                init() {
+                    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+                    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                        return new bootstrap.Popover(popoverTriggerEl)
+                    })
+                },
+                formatDate(dateString, format = 'MMM dd - hh:mm a') {
+                    const {DateTime} = luxon
+
+                    let date = DateTime.fromISO(dateString)
+
+                    return date.toFormat(format)
+                },
+                toggleForm(flag = null) {
+                    this.failures = {}
+                    if (flag === null) {
+                        this.isDimmed = this.isFormVisible = !this.isFormVisible
+                    } else {
+                        this.isDimmed = this.isFormVisible = flag
+                    }
+                },
+                translateType(type) {
+                    return this.metas.types[type] || type
+                },
+                focusRecord(record) {
+                    this.focusedRecord = record
+                    this.previousRecordState = {...record}
+                },
+                addRecord(record) {
+                    this.data.push(record)
+                },
+                removeRecord(record) {
+                    this.data = this.data.filter(r => r.id !== record.id)
+                },
+                resetFocusRecord() {
+                    this.focusedRecord = {...initialRecord}
+                    this.previousRecordState = {...initialRecord}
+                },
+                undoFocusRecord() {
+                    // create a clean layer containing all the properties from the focused record
+                    // this will ensure that properties that are not found in the previous state are also cleared
+                    let keys = Object.keys(this.focusedRecord)
+                    let cleanLayer = {}
+                    keys.forEach(key => {
+                        cleanLayer[key] = null
+                    })
+
+                    Object.assign(this.focusedRecord, cleanLayer, this.previousRecordState)
+                },
+                saveRecord() {
+                    post = this.focusedRecord
+
+                    this.toggleNotif('Saving')
+
+                    if (post.id) {
+                        const id = post.id
+                        axios
+                            .put(
+                                `/api/transactions/${id}`,
+                                post
+                            )
+                            .then(response => {
+                                this.previousRecordState = {...this.focusedRecord}
+                                this.failures = {}
+                                this.toggleNotif('Saved', true)
+                            })
+                            .catch(response => {
+                                this.failures = response.response.data.failures
+                                this.toggleNotif('Rejected', false)
+                            })
+                    } else {
+                        axios
+                            .post(
+                                '/api/transactions',
+                                post
+                            )
+                            .then(response => {
+                                Object.assign(this.focusedRecord, response.data.data)
+
+                                axios
+                                .get('/api/transactions')
+                                .then(response => {
+                                    this.data = response.data.data
+                                    this.data.forEach(record => {
+                                        if (record.id == this.focusedRecord.id) this.focusedRecord = record
+                                    })
+                                })
+
+                                this.failures = {}
+                                this.toggleNotif('Saved', true)
+                            })
+                            .catch(response => {
+                                this.failures = response.response.data.failures
+                                this.toggleNotif('Rejected', false)
+                            })
+                    }
+
+                    console.log(this.failures)
+                },
+                toggleNotif(label, status = null, timeout = 1000) {
+                    this.notif.status = status
+                    this.notif.label = label
+                    if (status === null) {
+                        this.notif.class = 'move-down'
+                    } else {
+                        setTimeout(() => {
+                            this.notif.class = 'move-up'
+                        }, timeout)
+                    }
+                },
+                showFailure(key) {
+                    if (this.failures[key]) {
+                        return this.failures[key][0]
+                    }
+                    return ''
+                },
+            },
+            delimiters: ['{$', '$}'],
+        }).mount('#app')
+    </script>
+{% endblock %}

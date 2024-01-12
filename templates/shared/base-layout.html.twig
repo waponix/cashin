@@ -1,0 +1,108 @@
+{% set
+    menu = [
+        {id: 'dashboard', label: '', class: 'fa fa-dashboard', route: 'app_dashboard'},
+        {id: 'transaction', label: 'Transactions', class: 'fa fa-file-text-o', route: 'app_transaction'},
+    ]
+%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ documentTitle }}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/shared/bootstrap/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/shared/fontawesome/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/shared/base-layout.css') }}">
+    {% endblock %}
+</head>
+<body>
+    <script src="{{ asset('js/shared/vue/vue.js') }}"></script>
+    <script src="{{ asset('js/shared/axios/axios.min.js') }}"></script>
+    <div id="app">
+        <header id="header" class="pt-3 px-3 clearfix">
+            <div id="user-menu" class="float-end mb-3 fs-5">
+                <a 
+                    href="{{ path('app_logout') }}" 
+                    class="link-dark ps-2" 
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-placement="left"
+                    data-bs-content="Settings"
+                    ><i class="fa fa-cog"></i></a>
+                <a 
+                    href="{{ path('app_logout') }}" 
+                    class="link-dark ps-2"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="hover"
+                    data-bs-placement="left"
+                    data-bs-content="Logout"
+                    ><i class="fa fa-sign-out"></i></a>
+            </div>
+            <div class="clearfix"></div>
+            <h4 id="page-title" class="text-center text-muted">
+                {{ pageTitle }}
+            </h4>
+            <div class="d-flex vw-75 m-auto">
+                <div class="w-100">
+                    <nav id="navigation-menu">
+                    {% for menuItem in menu %}
+                        {% set setActive = active == menuItem.id ? 'active' : '' %}
+                        <a class="btn btn-outline-dark {{ setActive }} rounded-5" 
+                            {% if setActive == false%}
+                                href="{{ path(menuItem.route) }}"
+                            {% else %}
+                                data-bs-toggle="popover" 
+                                data-bs-trigger="hover" 
+                                data-bs-content="You are here"
+                                data-bs-placement="top"
+                            {% endif %}
+                        >
+                            <small>
+                                <i class="{{ menuItem.class }}"></i>
+                                {% if menuItem.label is not empty %}
+                                &nbsp;{{ menuItem.label }}
+                                {% endif %}
+                            </small>
+                        </a>
+                    {% endfor %}
+                    </nav>
+                </div>
+                <div class="w-100">
+                {% block pageOptions %}{% endblock %}
+                </div>
+            </div>
+        </header>
+        <section id="body-container">
+            {% block body %}{% endblock %}
+        </section>
+        <footer id="footer">
+            {% block footer %}{% endblock %}
+        </footer>
+        <div v-if="isDimmed" class="dim-layer"></div>
+        <div id="saving-status" class="notif d-flex justify-content-center align-items-center px-5 py-3 border border-1 rounded-4" :class="notif.class">
+            <span class="pe-2">{$ notif.label $}</span>
+            <div v-if="notif.status == null" class="notif-icon loading">
+                <i class="fa fa-spinner fa-spin fa-pulse fs-4 text-muted"></i>
+            </div>
+            <div v-else-if="notif.status == true" class="notif-icon ok">
+                <i class="fa fa-check fs-4 text-success"></i>
+            </div>
+            <div v-else class="notif-icon error">
+                <i class="fa fa-close fs-4 text-danger"></i>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        <script src="{{ asset('js/shared/bootstrap/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('js/shared/luxon/luxon.min.js') }}"></script>
+        <script>
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+            })
+        </script>
+    {% endblock %}
+</body>
+</html>
