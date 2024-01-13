@@ -25,11 +25,6 @@ class TransactionType extends AbstractType
                 'attr' => [
                     'placeholder' => '- - - - - - - - - - - -',
                 ],
-                'constraints' => [
-                    new NotBlank([
-                        'message'=> 'should be filled',
-                    ])
-                ],
                 'invalid_message' => 'is not valid',
             ])
             ->add('mobile', TextType::class, [
@@ -38,11 +33,6 @@ class TransactionType extends AbstractType
                 'attr' => [
                     'placeholder' => '00000000000',
                     'maxlength' => 11,
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message'=> 'should be filled',
-                    ])
                 ],
                 'invalid_message' => 'is not valid',
             ])
@@ -58,11 +48,6 @@ class TransactionType extends AbstractType
                 'attr' => [
                     'placeholder' => '00.00',
                 ],
-                'constraints' => [
-                    new NotBlank([
-                        'message'=> 'should be filled',
-                    ])
-                ],
                 'invalid_message' => 'is not valid',
             ])
             ->add('transactionedAt', TextType::class, [
@@ -71,11 +56,6 @@ class TransactionType extends AbstractType
                 'attr' => [
                     'placeholder' => 'MM/DD/YYYY',
                 ],
-                'constraints' => [
-                    new NotBlank([
-                        'message'=> 'should be filled',
-                    ])
-                ],
                 'invalid_message' => 'is not valid',
             ]);
 
@@ -83,10 +63,13 @@ class TransactionType extends AbstractType
             ->get('transactionedAt')
             ->addModelTransformer(new CallbackTransformer(
                 function ($date) {
+                    if(!$date instanceof \DateTimeImmutable && trim($date) === '') {
+                       return null;
+                    }
                     return $date;
                 },
                 function ($date) {
-                    if (strtotime($date) === false) {
+                    if (trim($date) === '' || strtotime($date) === false) {
                         return null;
                     }
                     return new \DateTimeImmutable($date);

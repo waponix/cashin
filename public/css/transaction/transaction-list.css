@@ -34,3 +34,9 @@
     border-color: var(--card-hover-color);
     outline: 1px solid var(--card-hover-color);
 }
+
+.card-loader {
+    position: relative;
+    display: block;
+    text-align: center;
+}

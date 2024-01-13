@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,40 +17,72 @@ class Transaction
         'Pay Bill' => 'pay bill',
     ];
     
+    // $id
+    // ORM configurations
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    
+    // $referenceId
+    // ORM configurations
     #[ORM\Column(length: 16, unique: true)]
+    // Assertions
+    #[Assert\NotNull(message: 'cannot be blank')]
     private ?string $referenceId = null;
 
+    // $user
+    // ORM configurations
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    // $type
+    // ORM configurations
     #[ORM\Column(length: 15)]
+    // Assertions
+    #[Assert\NotNull(message: 'cannot be blank')]
     private ?string $type = null;
 
+    // $amount
+    // ORM configurations
     #[ORM\Column]
+    // Assertions
+    #[Assert\NotNull(message: 'cannot be blank')]
     private ?float $amount = null;
 
+    // $details
+    // ORM configurations
     #[ORM\Column(nullable: true)]
     private ?array $details = null;
 
+    // $createdAt
+    // ORM configurations
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    // $updatedAt
+    // ORM configurations
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    // $screenshot
+    // ORM configurations
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $screenshot = null;
 
+    // $message
+    // ORM configurations
     #[ORM\Column(nullable: true)]
+    // Assertions
+    #[Assert\NotNull(message: 'cannot be blank')]
     private ?\DateTimeImmutable $transactionedAt = null;
 
+    // $mobile
+    // ORM configurations
     #[ORM\Column(length: 15, nullable: true)]
+    // Assertions
+    #[Assert\NotNull(message: 'cannot be blank')]
     private ?string $mobile = null;
 
     public function getId(): ?int
@@ -62,7 +95,7 @@ class Transaction
         return $this->referenceId;
     }
 
-    public function setReferenceId(string $referenceId): static
+    public function setReferenceId(?string $referenceId): static
     {
         $this->referenceId = $referenceId;
 
@@ -86,7 +119,7 @@ class Transaction
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 
@@ -98,7 +131,7 @@ class Transaction
         return $this->amount;
     }
 
-    public function setAmount(float $amount): static
+    public function setAmount(?float $amount): static
     {
         $this->amount = $amount;
 
@@ -110,7 +143,7 @@ class Transaction
         return $this->details;
     }
 
-    public function setDetails(array $details): static
+    public function setDetails(?array $details): static
     {
         $this->details = $details;
 
@@ -172,7 +205,7 @@ class Transaction
         return $this->transactionedAt;
     }
 
-    public function setTransactionedAt(\DateTimeImmutable $transactionedAt): static
+    public function setTransactionedAt(?\DateTimeImmutable $transactionedAt): static
     {
         $this->transactionedAt = $transactionedAt;
 
@@ -184,7 +217,7 @@ class Transaction
         return $this->mobile;
     }
 
-    public function setMobile(string $mobile): static
+    public function setMobile(?string $mobile): static
     {
         $this->mobile = $mobile;
 

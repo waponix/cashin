@@ -83,6 +83,9 @@
                     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
                         return new bootstrap.Popover(popoverTriggerEl)
                     })
+
+                    // remove the loading screen
+                    document.querySelector('#page-load').remove()
                 },
                 formatDate(dateString, format = 'MMM dd - hh:mm a') {
                     const {DateTime} = luxon

@@ -21,8 +21,8 @@ class TransactionService extends AbstractBaseService
         $form = $this->createApiForm(TransactionType::class);
         $form->handleRequest($this->getRequest());
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            $errors = $this->getErrorMessages($form);
+        $errors = $this->getErrorMessages($form);
+        if (!empty($errors)) {
             return false;
         }
 
@@ -38,12 +38,12 @@ class TransactionService extends AbstractBaseService
 
         $transaction = $this->em->getRepository(Transaction::class)->findOneBy(['id' => $id]);
 
-        $form = $this->createApiForm(TransactionType::class, $transaction);
-        $form->submit($this->getRequest()->request->all());
+        // set the method of this form to PUT
+        $form = $this->createApiForm(TransactionType::class, $transaction, ['method' => 'PUT']);
         $form->handleRequest($this->getRequest());
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            $errors = $this->getErrorMessages($form);
+        $errors = $this->getErrorMessages($form);
+        if (!empty($errors)) {
             return false;
         }
 

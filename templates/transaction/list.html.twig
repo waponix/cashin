@@ -1,26 +1,31 @@
-<div v-for="group in list" class="card-group">
-    <template v-for="item in group">
-        <div v-if="item.showDivider" class="divider text-end pt-3 text-muted">
-            <h5><i class="fa fa-calendar-o">&nbsp;</i> {$ formatDate(item.record.transactionedAt, 'yyyy, MMM') $}</h5>
-        </div>
-        <div :key="item.record.id" @click="focusRecord(item.record); toggleForm(true)" class="card-item p-3 border border-1 rounded-4">
-            <div class="card-item-title">
-                <div class="row">
-                    <div class="col-6">
-                        <span>{$ translateType(item.record.type) $}</span>
-                        <br/>
-                        <small>{$ formatDate(item.record.transactionedAt) $}</small>
-                    </div>
-                    <div class="col-6 text-end">
-                        <small class="text-muted fst-italic">
-                            Reference
-                        </small>
-                        <br/>
-                        &nbsp;
-                        <span class="fw-bold">{$ item.record.referenceId $}</span>
+<div>
+    <div v-for="group in list" class="card-group">
+        <template v-for="item in group">
+            <div v-if="item.showDivider" class="divider text-end pt-3 text-muted">
+                <h5><i class="fa fa-calendar-o">&nbsp;</i> {$ formatDate(item.record.transactionedAt, 'yyyy, MMM') $}</h5>
+            </div>
+            <div :key="item.record.id" @click="focusRecord(item.record); toggleForm(true)" class="card-item p-3 border border-1 rounded-4">
+                <div class="card-item-title">
+                    <div class="row">
+                        <div class="col-6">
+                            <span>{$ translateType(item.record.type) $}</span>
+                            <br/>
+                            <small>{$ formatDate(item.record.transactionedAt) $}</small>
+                        </div>
+                        <div class="col-6 text-end">
+                            <small class="text-muted fst-italic">
+                                Reference
+                            </small>
+                            <br/>
+                            &nbsp;
+                            <span class="fw-bold">{$ item.record.referenceId $}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </template>
+        </template>
+    </div>
+    <div class="card-loader">
+        <i class="fa fa-spinner fa-pulse fa-2x text-muted p-2"></i>
+    </div>
 </div>
