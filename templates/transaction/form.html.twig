@@ -12,7 +12,7 @@
             data-bs-trigger="hover"
             data-bs-content="Save"
         ><i class="fa fa-save"></i></a><br>
-        <a class="btn btn-outline-dark rounded-5 m-0"
+        <a @click="removeRecord" class="btn btn-outline-dark rounded-5 m-0"
             data-bs-toggle="popover"
             data-bs-placement="right"
             data-bs-trigger="hover"
@@ -76,4 +76,5 @@
         </div>
         {{ form_end(form) }}
     </div>
+    {% include 'shared/confirm-action.html.twig' %}
 </section>

@@ -1,0 +1,8 @@
+<div v-if="confirm.visible" class="confirm-action d-flex justify-content-center align-items-center flex-column">
+    <i class="fa fa-warning fa-5x mb-4"></i>
+    <div class="confirm-action-message pb-4">{$ confirm.message $}</div>
+    <div class="confirm-action-buttons">
+        <button @click="onConfirmYes" class="confirm-action-yes btn btn-danger rounded rounded-3">Yes</button>
+        <button @click="onConfirmNo" class="confirm-action-no btn btn-outline-dark rounded rounded-3">No</button>
+    </div>
+</div>

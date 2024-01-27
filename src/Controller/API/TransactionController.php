@@ -2,11 +2,8 @@
 namespace App\Controller\API;
 
 use App\Entity\Transaction;
-use App\Form\TransactionType;
 use App\Service\TransactionService;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\{Get, Post, Put, Delete};
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,5 +51,21 @@ class TransactionController extends AbstractAPIController
         }
 
         return $this->respond($data, $request->get('_route') . ':ok', 200);
+    }
+
+    #[Delete(path: '/api/transactions/{id}')]
+    public function delete(Request $request, TransactionService $transactionService): Response
+    {
+        $data = $transactionService->delete();
+
+        if ($data === false) {
+            return $this
+                ->setFailures([
+                    'Operation failed'
+                ])
+                ->respond([], $request->get('_route') . ':error', 500);
+        }
+
+        return $this->respond([], $request->get('_route') . ':ok', 204);
     }
 }

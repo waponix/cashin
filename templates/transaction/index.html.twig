@@ -43,6 +43,10 @@
                         status: null,
                         class: ''
                     },
+                    confirm: {
+                        visible: false,
+                        message: 'Deleting this record cannot be undone, are you sure to proceed?',
+                    }
                 }
             },
             mounted () {
@@ -113,7 +117,7 @@
                     this.data.push(record)
                 },
                 removeRecord(record) {
-                    this.data = this.data.filter(r => r.id !== record.id)
+                    this.toggleConfirm()
                 },
                 resetFocusRecord() {
                     this.focusedRecord = {...initialRecord}
@@ -197,6 +201,16 @@
                     }
                     return ''
                 },
+                onConfirmYes() {
+                    this.toggleForm()
+                    this.toggleConfirm()
+                },
+                onConfirmNo() {
+                    this.toggleConfirm()
+                },
+                toggleConfirm() {
+                    this.confirm.visible = !this.confirm.visible
+                }
             },
             delimiters: ['{$', '$}'],
         }).mount('#app')

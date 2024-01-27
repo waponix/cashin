@@ -57,12 +57,36 @@ class TransactionService extends AbstractBaseService
             $this->em->persist($data);
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (\Exception $exception) {
+        } catch (\Throwable $error) {
             $this->em->getConnection()->rollback();
             return false;
         }
 
         return $data;
+    }
+
+    public function delete(): bool
+    {
+        $id = $this->getRequest()->get('id');
+
+        $transaction = $this->em->getRepository(Transaction::class)->findOneBy(['id' => $id]);
+
+        if (!$transaction instanceof Transaction) {
+            return true;
+        }
+
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            $this->em->remove($transaction);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $error) {
+            $this->em->getConnection()->rollback();
+            return false;
+        }
+
+        return true;
     }
 
     private function getErrorMessages(Form $form) {
